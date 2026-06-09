@@ -1,0 +1,229 @@
+# GenAI Learning Notes
+> Sessions 1 & 2 — Concepts, Terminology, and Prompt Engineering
+
+---
+
+## Session 1 — Foundations
+
+### What is AI, ML, GenAI?
+
+| Term | What it means |
+|------|--------------|
+| **AI (Artificial Intelligence)** | Machines that simulate human intelligence — decision-making, reasoning, problem-solving |
+| **ML (Machine Learning)** | Subset of AI. Machines *learn* from data without being explicitly programmed. Example: spam filters learn from examples |
+| **GenAI (Generative AI)** | Subset of ML. AI that *generates* new content — text, images, code, audio. Examples: ChatGPT, Claude, Midjourney |
+| **LLM (Large Language Model)** | The engine behind GenAI text tools. Trained on massive text data to predict and generate language. Examples: GPT-4, Claude 3, Llama 3 |
+
+**Simple mental model:**
+```
+AI
+ └── ML
+      └── Deep Learning
+           └── GenAI
+                └── LLMs (text), Diffusion Models (images), etc.
+```
+
+---
+
+### What is ChatGPT / Claude?
+
+- **ChatGPT** = OpenAI's product built on their GPT-series LLMs
+- **Claude** = Anthropic's product built on their Claude-series LLMs
+- Both are **chat interfaces** on top of LLMs — they take your input and generate a response
+
+Think of LLM = engine, ChatGPT/Claude = the car built on top of that engine.
+
+---
+
+### Tokens
+
+**Tokens** are the unit of text an LLM reads and generates. Not exactly words — more like word-pieces.
+
+Examples:
+- `"DevOps"` = 1 token
+- `"Kubernetes"` = 2–3 tokens
+- `"I love pizza"` = 3 tokens
+- `"antidisestablishmentarianism"` = several tokens
+
+**Why it matters:**
+- Models have a **token limit** (context window) — e.g., Claude Sonnet 4 = ~200k tokens
+- API usage is **billed by tokens** (input + output)
+- Longer prompts = more tokens = higher cost and slower response
+
+Rule of thumb: **~1 token ≈ 0.75 words** (or 4 characters)
+
+---
+
+### Context Window
+
+The **context window** is the total amount of text (tokens) the model can "see" at once — your prompt + conversation history + its response.
+
+```
+[ System Prompt ] + [ Conversation History ] + [ Your Message ] + [ Model Response ]
+                        ← All must fit inside Context Window →
+```
+
+- **Short context** = model forgets earlier parts of conversation
+- **Long context** = model can reference earlier messages, documents, code
+- Context does NOT persist between separate conversations (unless you save it)
+
+---
+
+### Temperature
+
+Controls **randomness / creativity** of the model's output.
+
+| Value | Behavior | Use Case |
+|-------|----------|----------|
+| `0.0` | Deterministic, same answer every time | Code generation, factual Q&A |
+| `0.3–0.5` | Focused but slight variation | Technical writing, summaries |
+| `0.7–0.9` | Creative, varied responses | Brainstorming, storytelling |
+| `1.0+` | Very random, sometimes incoherent | Experimental / creative exploration |
+
+**DevOps tip:** When asking Claude to generate Terraform or Kubernetes YAML, use low temperature (0–0.3) for predictable output.
+
+---
+
+### Roles in LLM APIs
+
+When calling an LLM via API, messages have **roles**:
+
+| Role | Purpose | Example |
+|------|---------|---------|
+| `system` | Sets behavior, persona, rules for the model | `"You are a Senior DevOps Engineer. Be concise."` |
+| `user` | Your actual input / question | `"Write a Terraform module for AKS"` |
+| `assistant` | Model's response (also used to inject prior turns) | Model's generated reply |
+
+```json
+[
+  { "role": "system", "content": "You are a DevOps expert." },
+  { "role": "user", "content": "Explain AKS node pools." },
+  { "role": "assistant", "content": "AKS node pools are..." },
+  { "role": "user", "content": "What about system node pools specifically?" }
+]
+```
+
+This structure is what makes **multi-turn conversations** work.
+
+---
+
+## Session 2 — Prompt Engineering
+
+Prompt Engineering = crafting inputs to get the best possible output from an LLM.
+
+---
+
+### Zero-Shot Prompting
+
+Give the model a task with **no examples**. Just ask.
+
+```
+Prompt: Summarize the following Terraform code in one paragraph.
+```
+
+**When to use:** Simple, straightforward tasks the model already knows well.
+
+**Limitation:** May not follow the exact format or style you want.
+
+---
+
+### Few-Shot Prompting
+
+Give the model **examples** of the input → output pattern before your actual task.
+
+```
+Prompt:
+Convert the error message to a human-readable fix suggestion.
+
+Error: "ImagePullBackOff"
+Fix: "The container image cannot be pulled. Check the image name, tag, and registry credentials."
+
+Error: "CrashLoopBackOff"
+Fix: "The pod keeps crashing. Check the application logs with kubectl logs <pod-name>."
+
+Error: "OOMKilled"
+Fix: [model fills this in]
+```
+
+**When to use:** When you need the model to follow a specific pattern, format, or tone.
+
+---
+
+### Chain of Thought (CoT)
+
+Tell the model to **think step by step** before answering. Forces reasoning, reduces errors on complex tasks.
+
+```
+Prompt: A pod is in Pending state. Think step by step through the possible causes.
+
+Model output:
+1. Check if nodes have available resources (CPU, memory)
+2. Check if the scheduler has any taints/tolerations mismatches
+3. Check if PersistentVolumeClaims are bound
+4. Check node selector / affinity rules
+...
+```
+
+Add `"Let's think step by step"` or `"Walk me through your reasoning"` to trigger CoT.
+
+**When to use:** Debugging, architecture decisions, complex analysis, math problems.
+
+---
+
+### RBCFC — Role, Background, Context, Format, Constraint
+
+A structured prompt framework for professional-grade outputs.
+
+| Component | What to include | Example |
+|-----------|----------------|---------|
+| **R**ole | Who the model should act as | `"You are a Senior Azure DevOps Engineer"` |
+| **B**ackground | Relevant background knowledge | `"We use Terraform for IaC, AKS for orchestration"` |
+| **C**ontext | Specific situation/details | `"Our pod is failing to pull images from ACR in a private cluster"` |
+| **F**ormat | How you want the output | `"Give a numbered list of steps with CLI commands"` |
+| **C**onstraint | Limits or restrictions | `"Use only Azure CLI, not the portal. Keep it under 200 words."` |
+
+**Full RBCFC Prompt Example:**
+```
+Role: You are a Senior DevOps Engineer specializing in Azure and Kubernetes.
+
+Background: I manage an AKS private cluster with Workload Identity enabled.
+ACR is attached to AKS using managed identity.
+
+Context: Pods are failing with ImagePullBackOff even though the ACR attachment 
+command ran successfully.
+
+Format: Provide a step-by-step diagnostic checklist with the exact az and 
+kubectl commands for each step.
+
+Constraint: Do not suggest solutions that require cluster recreation. 
+Limit to 8 steps max.
+```
+
+---
+
+### Prompt Engineering Quick Reference
+
+```
+Simple question            → Zero-Shot
+Pattern/format matching    → Few-Shot
+Complex reasoning/debug    → Chain of Thought
+Professional/detailed task → RBCFC Framework
+```
+
+---
+
+### Your Own API Key
+
+When you get an API key (OpenAI, Anthropic, etc.), you can:
+
+1. **Call the model programmatically** — from Python, JS, curl
+2. **Build your own apps** — chatbots, automation, tools
+3. **Control parameters** — temperature, max_tokens, system prompt
+4. **Track usage** — monitor cost per call
+
+See `genai-applications.md` for hands-on usage examples.
+See `session3-own-model.md` for building your own model-powered tools.
+
+---
+
+*Notes maintained by: Abhijeet Rajput (HyperX) | Coditas Technologies | June 2026*
