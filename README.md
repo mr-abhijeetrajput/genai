@@ -42,27 +42,21 @@ GENAI/genai/
 
 ## Quick Start
 
-### 1. Copy the env template and add your key
 ```bash
-copy .env.example .env        # Windows
+# 1. Setup env
 cp .env.example .env          # Mac/Linux
-```
-Open `.env` and replace `your-openrouter-key-here` with your actual key.
+copy .env.example .env        # Windows
+# Open .env and add your OpenRouter key
 
-### 2. Install dependencies
-```bash
-cd applications
-pip install -r requirements.txt
-```
+# 2. Create venv and install dependencies
+python3 -m venv .venv
+source .venv/bin/activate     # Mac/Linux
+.venv\Scripts\activate        # Windows
+pip install -r applications/requirements.txt
 
-### 3. Run your first app
-```bash
-python applications/01_basic_ask.py
-```
-
-### 4. Try the Tic-Tac-Toe demo (Session 2 demo)
-```bash
-python applications/02_tictactoe.py
+# 3. Run any app
+.venv/bin/python applications/01_basic_ask.py
+.venv/bin/python applications/02_tictactoe.py
 ```
 
 ---
