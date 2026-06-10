@@ -6,13 +6,26 @@
 ## Repo Structure
 
 ```
-GENAI/
-├── README.md                  ← Start here
-├── genai-notes.md             ← Session 1 & 2: concepts + prompt engineering
-├── genai-applications.md      ← Session 2 hands-on: API key usage + DevOps apps
-├── session3-own-model.md      ← Session 3: build your own AI tools step by step
-├── genai-playground.jsx       ← Interactive React playground (run in Claude.ai)
-└── Tictactoe-ai.py            ← Session 2 demo: Claude plays Tic-Tac-Toe via API
+GENAI/genai/
+├── README.md                        ← Start here
+├── .env.example                     ← Copy to .env and add your key
+├── .gitignore                       ← Protects your key from being pushed
+│
+├── genai-notes.md                   ← Session 1 & 2: concepts + prompt engineering
+├── genai-applications.md            ← Session 2 hands-on: OpenRouter setup + app index
+├── session3-own-model.md            ← Session 3: build your own AI tools (Steps 1–13)
+│
+├── applications/                    ← Runnable Python scripts (one per app)
+│   ├── requirements.txt             ← pip install -r requirements.txt
+│   ├── 01_basic_ask.py              ← Basic API call template
+│   ├── 02_tictactoe.py              ← AI plays Tic-Tac-Toe (Session 2 demo)
+│   ├── 03_k8s_log_analyzer.py       ← Paste kubectl logs → get root cause
+│   ├── 04_terraform_reviewer.py     ← Security & best-practice review
+│   ├── 05_commit_message.py         ← git diff → Conventional Commits message
+│   ├── 06_standup_generator.py      ← Raw bullets → clean standup update
+│   └── 07_terminal_chatbot.py       ← Persistent multi-turn DevOps assistant
+│
+└── genai-playground.jsx             ← Interactive React playground (Claude.ai)
 ```
 
 ---
@@ -21,62 +34,74 @@ GENAI/
 
 | # | Session | Topics | File |
 |---|---------|--------|------|
-| 1 | Foundations | AI, ML, GenAI, LLMs, Tokens, Context, Temperature, Roles | `genai-notes.md` |
-| 2 | Prompt Engineering | Zero-Shot, Few-Shot, Chain of Thought, RBCFC | `genai-notes.md` |
-| 3 | Build with Your Key | API setup, parameters, apps, fine-tuning, RAG | `session3-own-model.md` |
+| 1 | Foundations | 1.1 AI/ML/GenAI — 1.2 ChatGPT/Claude — 1.3 Tokens — 1.4 Context — 1.5 Temperature — 1.6 Roles | `genai-notes.md` |
+| 2 | Prompt Engineering | 2.1 Zero-Shot — 2.2 Few-Shot — 2.3 Chain of Thought — 2.4 RBCFC — 2.5 Quick Reference | `genai-notes.md` |
+| 3 | Build with Your Key | Steps 1–13: setup → parameters → apps → streaming → cost → fine-tuning → RAG | `session3-own-model.md` |
 
 ---
 
 ## Quick Start
 
-1. **Get your API key**
-   - Anthropic (Claude): https://console.anthropic.com
-   - OpenAI (GPT): https://platform.openai.com
+### 1. Copy the env template and add your key
+```bash
+copy .env.example .env        # Windows
+cp .env.example .env          # Mac/Linux
+```
+Open `.env` and replace `your-openrouter-key-here` with your actual key.
 
-2. **Set your key as an environment variable**
-   ```bash
-   # Windows — Command Prompt
-   set ANTHROPIC_API_KEY=sk-ant-your-key-here
+### 2. Install dependencies
+```bash
+cd applications
+pip install -r requirements.txt
+```
 
-   # Windows — PowerShell
-   $env:ANTHROPIC_API_KEY="sk-ant-your-key-here"
+### 3. Run your first app
+```bash
+python applications/01_basic_ask.py
+```
 
-   # Mac / Linux
-   export ANTHROPIC_API_KEY="sk-ant-your-key-here"
-   ```
+### 4. Try the Tic-Tac-Toe demo (Session 2 demo)
+```bash
+python applications/02_tictactoe.py
+```
 
-3. **Install the SDK and run the demo**
-   ```bash
-   pip install anthropic
-   python Tictactoe-ai.py
-   ```
+---
 
-4. **Try the interactive playground**
-   - Open `genai-playground.jsx` → paste into Claude.ai as an artifact
+## Approved Models (use only these)
+
+| # | Model ID | Best For |
+|---|----------|----------|
+| 1 | `google/gemini-3.5-flash` | Fast tasks, writing, standup, basic Q&A |
+| 2 | `minimax/minimax-m3` | Multi-turn conversations, chatbots |
+| 3 | `qwen/qwen3.7-max` | Code generation, commit messages |
+| 4 | `deepseek/deepseek-v4-pro` | Deep reasoning, log analysis, Terraform review |
+
+> Do NOT use Anthropic or OpenAI models with the provided key.
 
 ---
 
 ## Key Concepts at a Glance
 
-| Concept | One-liner |
-|---------|-----------|
-| Token | Unit of text an LLM reads (~0.75 words) |
-| Context Window | Total tokens the model can see at once |
-| Temperature | 0 = precise, 1.5 = creative/chaotic |
-| System Prompt | Instructions that shape the model's behavior |
-| Zero-Shot | Ask directly, no examples |
-| Few-Shot | Show examples, then ask |
-| Chain of Thought | Ask the model to reason step by step |
-| RBCFC | Role, Background, Context, Format, Constraint |
+| # | Concept | One-liner |
+|---|---------|-----------|
+| 1 | Token | Unit of text an LLM reads (~0.75 words) |
+| 2 | Context Window | Total tokens the model can see at once |
+| 3 | Temperature | 0 = precise, 1.5 = creative/chaotic |
+| 4 | System Prompt | Instructions that shape the model's behavior |
+| 5 | Zero-Shot | Ask directly, no examples |
+| 6 | Few-Shot | Show examples, then ask |
+| 7 | Chain of Thought | Ask the model to reason step by step |
+| 8 | RBCFC | Role, Background, Context, Format, Constraint |
 
 ---
 
-## API Key Safety
+## API Key Safety Rules
 
-1. Never push your key to GitHub
-2. Always use environment variables or a `.env` file
-3. Add `.env` to `.gitignore`
-4. Set spend limits at console.anthropic.com
+1. Never paste your key directly in any `.py` file
+2. Always load from `.env` using `python-dotenv`
+3. `.env` is in `.gitignore` — confirm before every `git push`
+4. Never push to a public GitHub/GitLab repository
+5. If the key is ever exposed, report to your session lead immediately
 
 ---
 

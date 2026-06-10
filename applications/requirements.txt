@@ -1,0 +1,5 @@
+# Install all dependencies for the applications folder
+# Run: pip install -r requirements.txt
+
+openai>=1.0.0
+python-dotenv>=1.0.0

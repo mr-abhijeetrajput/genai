@@ -135,7 +135,6 @@ export default function App() {
           <p style={{ margin: "2px 0 0", fontSize: 13, color: "var(--color-text-secondary)" }}>Company GenAI Training — Sessions 1–3</p>
         </div>
         <button onClick={() => setShowKeyPanel(v => !v)} style={{ fontSize: 13, display: "flex", alignItems: "center", gap: 6, padding: "6px 12px" }}>
-          <i className="ti ti-key" aria-hidden="true" style={{ fontSize: 15 }}></i>
           {apiKey ? "Key saved ✓" : "Add API Key"}
         </button>
       </div>
@@ -143,21 +142,12 @@ export default function App() {
       {/* Key Panel */}
       {showKeyPanel && (
         <div style={{ background: "var(--color-background-secondary)", borderRadius: "var(--border-radius-lg)", border: "0.5px solid var(--color-border-tertiary)", padding: "1rem 1.25rem", marginBottom: "1.25rem" }}>
-          <p style={{ margin: "0 0 8px", fontSize: 13, fontWeight: 500 }}>Anthropic API Key</p>
-          <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--color-text-secondary)" }}>Stored in your browser only. Never sent anywhere except api.anthropic.com.</p>
+          <p style={{ margin: "0 0 8px", fontSize: 13, fontWeight: 500 }}>API Key</p>
+          <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--color-text-secondary)" }}>Stored in your browser only.</p>
           <div style={{ display: "flex", gap: 8 }}>
-            <input
-              type="password"
-              placeholder="sk-ant-..."
-              value={keyInput}
-              onChange={e => setKeyInput(e.target.value)}
-              style={{ flex: 1, fontFamily: "var(--font-mono)" }}
-            />
+            <input type="password" placeholder="sk-ant-..." value={keyInput} onChange={e => setKeyInput(e.target.value)} style={{ flex: 1, fontFamily: "var(--font-mono)" }} />
             <button onClick={saveKey} style={{ padding: "0 16px" }}>Save</button>
           </div>
-          <p style={{ margin: "8px 0 0", fontSize: 11, color: "var(--color-text-secondary)" }}>
-            Get your key at <a href="https://console.anthropic.com" target="_blank" rel="noreferrer">console.anthropic.com</a>
-          </p>
         </div>
       )}
 
@@ -166,158 +156,71 @@ export default function App() {
         <p style={{ margin: "0 0 8px", fontSize: 12, color: "var(--color-text-secondary)", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.05em" }}>Prompt Technique</p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           {Object.entries(TECHNIQUES).map(([key, t]) => (
-            <button
-              key={key}
-              onClick={() => loadTechnique(key)}
-              style={{
-                padding: "6px 14px",
-                fontSize: 13,
-                background: activeTech === key ? t.color : "transparent",
-                color: activeTech === key ? "#fff" : "var(--color-text-primary)",
-                border: activeTech === key ? `0.5px solid ${t.color}` : "0.5px solid var(--color-border-secondary)",
-                borderRadius: "var(--border-radius-md)"
-              }}
-            >
+            <button key={key} onClick={() => loadTechnique(key)} style={{ padding: "6px 14px", fontSize: 13, background: activeTech === key ? t.color : "transparent", color: activeTech === key ? "#fff" : "var(--color-text-primary)", border: activeTech === key ? `0.5px solid ${t.color}` : "0.5px solid var(--color-border-secondary)", borderRadius: "var(--border-radius-md)" }}>
               {t.label}
             </button>
           ))}
         </div>
-        <p style={{ margin: "8px 0 0", fontSize: 12, color: "var(--color-text-secondary)" }}>
-          {TECHNIQUES[activeTech].description}
-        </p>
+        <p style={{ margin: "8px 0 0", fontSize: 12, color: "var(--color-text-secondary)" }}>{TECHNIQUES[activeTech].description}</p>
       </div>
 
       {/* Main Grid */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 260px", gap: 16, alignItems: "start" }}>
-
-        {/* Left — Prompts */}
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <div>
-            <label style={{ fontSize: 12, fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: 5 }}>
-              System prompt
-            </label>
-            <textarea
-              value={systemPrompt}
-              onChange={e => setSystemPrompt(e.target.value)}
-              rows={3}
-              style={{ width: "100%", resize: "vertical", fontFamily: "var(--font-mono)", fontSize: 13, boxSizing: "border-box" }}
-            />
+            <label style={{ fontSize: 12, fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: 5 }}>System prompt</label>
+            <textarea value={systemPrompt} onChange={e => setSystemPrompt(e.target.value)} rows={3} style={{ width: "100%", resize: "vertical", fontFamily: "var(--font-mono)", fontSize: 13, boxSizing: "border-box" }} />
           </div>
           <div>
-            <label style={{ fontSize: 12, fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: 5 }}>
-              User prompt
-            </label>
-            <textarea
-              value={userPrompt}
-              onChange={e => setUserPrompt(e.target.value)}
-              rows={7}
-              style={{ width: "100%", resize: "vertical", fontFamily: "var(--font-mono)", fontSize: 13, boxSizing: "border-box" }}
-            />
+            <label style={{ fontSize: 12, fontWeight: 500, color: "var(--color-text-secondary)", display: "block", marginBottom: 5 }}>User prompt</label>
+            <textarea value={userPrompt} onChange={e => setUserPrompt(e.target.value)} rows={7} style={{ width: "100%", resize: "vertical", fontFamily: "var(--font-mono)", fontSize: 13, boxSizing: "border-box" }} />
           </div>
-
-          <button
-            onClick={callAPI}
-            disabled={loading}
-            style={{ padding: "10px 0", fontSize: 14, fontWeight: 500, background: loading ? "transparent" : "var(--color-background-info)", color: loading ? "var(--color-text-secondary)" : "var(--color-text-info)", border: "0.5px solid var(--color-border-info)", borderRadius: "var(--border-radius-md)" }}
-          >
+          <button onClick={callAPI} disabled={loading} style={{ padding: "10px 0", fontSize: 14, fontWeight: 500 }}>
             {loading ? "Running…" : apiKey ? "Run prompt ↗" : "Add API key to run ↗"}
           </button>
-
-          {error && (
-            <div style={{ background: "var(--color-background-danger)", border: "0.5px solid var(--color-border-danger)", borderRadius: "var(--border-radius-md)", padding: "10px 14px", fontSize: 13, color: "var(--color-text-danger)" }}>
-              <strong>Error:</strong> {error}
-            </div>
-          )}
-
+          {error && <div style={{ fontSize: 13, color: "var(--color-text-danger)" }}><strong>Error:</strong> {error}</div>}
           {(response || loading) && (
             <div ref={responseRef} style={{ background: "var(--color-background-primary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: "var(--border-radius-lg)", padding: "1rem 1.25rem" }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
                 <span style={{ fontSize: 12, fontWeight: 500, color: "var(--color-text-secondary)" }}>Response</span>
                 <span style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>~{outputTokens} tokens out</span>
               </div>
-              {loading ? (
-                <p style={{ fontSize: 13, color: "var(--color-text-secondary)", margin: 0 }}>Thinking…</p>
-              ) : (
-                <pre style={{ margin: 0, fontSize: 13, whiteSpace: "pre-wrap", fontFamily: "var(--font-sans, sans-serif)", lineHeight: 1.7, color: "var(--color-text-primary)" }}>{response}</pre>
-              )}
+              {loading ? <p style={{ fontSize: 13, color: "var(--color-text-secondary)", margin: 0 }}>Thinking…</p> : <pre style={{ margin: 0, fontSize: 13, whiteSpace: "pre-wrap", fontFamily: "var(--font-sans, sans-serif)", lineHeight: 1.7 }}>{response}</pre>}
             </div>
           )}
         </div>
 
-        {/* Right — Settings */}
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-
           <div style={{ background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: "var(--border-radius-lg)", padding: "1rem" }}>
             <p style={{ margin: "0 0 12px", fontSize: 12, fontWeight: 500, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Model settings</p>
-
             <label style={{ fontSize: 12, color: "var(--color-text-secondary)", display: "block", marginBottom: 4 }}>Model</label>
             <select value={model} onChange={e => setModel(e.target.value)} style={{ width: "100%", fontSize: 13, marginBottom: 14 }}>
               {MODELS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
             </select>
-
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
               <label style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>Temperature</label>
               <span style={{ fontSize: 12, fontWeight: 500 }}>{temperature.toFixed(1)} — {tempLabel}</span>
             </div>
-            <input type="range" min="0" max="1.5" step="0.1" value={temperature} onChange={e => setTemperature(parseFloat(e.target.value))} style={{ width: "100%", marginBottom: 6 }} />
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, color: "var(--color-text-secondary)", marginBottom: 14 }}>
-              <span>Precise</span><span>Balanced</span><span>Wild</span>
-            </div>
-
+            <input type="range" min="0" max="1.5" step="0.1" value={temperature} onChange={e => setTemperature(parseFloat(e.target.value))} style={{ width: "100%", marginBottom: 14 }} />
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
               <label style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>Max tokens</label>
               <span style={{ fontSize: 12, fontWeight: 500 }}>{maxTokens}</span>
             </div>
             <input type="range" min="100" max="2000" step="50" value={maxTokens} onChange={e => setMaxTokens(parseInt(e.target.value))} style={{ width: "100%" }} />
           </div>
-
-          {/* Token Estimate */}
           <div style={{ background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: "var(--border-radius-lg)", padding: "1rem" }}>
             <p style={{ margin: "0 0 10px", fontSize: 12, fontWeight: 500, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Token estimate</p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              {[["Input", inputTokens, "var(--color-background-info)", "var(--color-text-info)"], ["Output", outputTokens, "var(--color-background-success)", "var(--color-text-success)"]].map(([label, val, bg, color]) => (
-                <div key={label} style={{ background: bg, borderRadius: "var(--border-radius-md)", padding: "8px 10px" }}>
-                  <p style={{ margin: 0, fontSize: 11, color }}>{label}</p>
-                  <p style={{ margin: 0, fontSize: 20, fontWeight: 500, color }}>{val}</p>
+              {[["Input", inputTokens], ["Output", outputTokens]].map(([label, val]) => (
+                <div key={label} style={{ background: "var(--color-background-primary)", borderRadius: "var(--border-radius-md)", padding: "8px 10px" }}>
+                  <p style={{ margin: 0, fontSize: 11, color: "var(--color-text-secondary)" }}>{label}</p>
+                  <p style={{ margin: 0, fontSize: 20, fontWeight: 500 }}>{val}</p>
                 </div>
               ))}
             </div>
-            <p style={{ margin: "8px 0 0", fontSize: 11, color: "var(--color-text-secondary)" }}>Approx. 1 token ≈ 0.75 words</p>
-          </div>
-
-          {/* Quick Reference */}
-          <div style={{ background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: "var(--border-radius-lg)", padding: "1rem" }}>
-            <p style={{ margin: "0 0 10px", fontSize: 12, fontWeight: 500, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Temperature guide</p>
-            {[["0.0–0.3", "Code, extraction, facts"], ["0.4–0.6", "Q&A, summaries"], ["0.7–0.9", "Conversation, writing"], ["1.0–1.5", "Brainstorm, creativity"]].map(([range, use]) => (
-              <div key={range} style={{ display: "flex", justifyContent: "space-between", padding: "3px 0", borderBottom: "0.5px solid var(--color-border-tertiary)" }}>
-                <code style={{ fontSize: 11, color: "var(--color-text-primary)", fontFamily: "var(--font-mono)" }}>{range}</code>
-                <span style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>{use}</span>
-              </div>
-            ))}
           </div>
         </div>
       </div>
-
-      {/* History */}
-      {history.length > 0 && (
-        <div style={{ marginTop: "2rem" }}>
-          <p style={{ margin: "0 0 10px", fontSize: 12, fontWeight: 500, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Recent runs</p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {history.map((h, i) => (
-              <div key={i} style={{ background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: "var(--border-radius-md)", padding: "10px 14px", cursor: "pointer" }}
-                onClick={() => { setActiveTech(h.tech); setSystemPrompt(TECHNIQUES[h.tech].system); setUserPrompt(h.prompt); setResponse(h.response); }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
-                  <span style={{ fontSize: 12, fontWeight: 500, color: TECHNIQUES[h.tech]?.color || "var(--color-text-primary)" }}>{TECHNIQUES[h.tech]?.label}</span>
-                  <span style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>{h.time} · temp {h.temperature.toFixed(1)}</span>
-                </div>
-                <p style={{ margin: 0, fontSize: 12, color: "var(--color-text-secondary)", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
-                  {h.response.substring(0, 100)}…
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
