@@ -19,11 +19,6 @@ GENAI/genai/
 │   ├── requirements.txt             ← pip install -r requirements.txt
 │   ├── 01_basic_ask.py              ← Basic API call template
 │   ├── 02_tictactoe.py              ← AI plays Tic-Tac-Toe (Session 2 demo)
-│   ├── 03_k8s_log_analyzer.py       ← Paste kubectl logs → get root cause
-│   ├── 04_terraform_reviewer.py     ← Security & best-practice review
-│   ├── 05_commit_message.py         ← git diff → Conventional Commits message
-│   ├── 06_standup_generator.py      ← Raw bullets → clean standup update
-│   └── 07_terminal_chatbot.py       ← Persistent multi-turn DevOps assistant
 │
 └── genai-playground.jsx             ← Interactive React playground (Claude.ai)
 ```
